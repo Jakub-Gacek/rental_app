@@ -1,4 +1,6 @@
-from PyQt6.QtWidgets import QMainWindow, QTabWidget, QWidget, QVBoxLayout, QLabel
+from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTabWidget
+
+from src.gui.tabs.clients_tab import ClientsTab
 
 
 class MainWindow(QMainWindow):
@@ -12,18 +14,14 @@ class MainWindow(QMainWindow):
 
         self.__central_widget = QWidget()
         self.setCentralWidget(self.__central_widget)
-        self.__layout = QVBoxLayout(self.__central_widget)
+
+        self.__main_layout = QVBoxLayout(self.__central_widget)
 
         self.__tabs = QTabWidget()
 
-        self.__tabs.addTab(self.__create_temp_tab("Tu będzie lista klientów"), "Klienci")
-        self.__tabs.addTab(self.__create_temp_tab("Tu będzie flota pojazdów"), "Pojazdy")
-        self.__tabs.addTab(self.__create_temp_tab("Tu będą aktywne wypożyczenia"), "Wypożyczalnia")
+        self.__tabs.addTab(ClientsTab(), "Klienci")
+        self.__tabs.addTab(QWidget(), "Pojazdy")
+        self.__tabs.addTab(QWidget(), "Wypożyczenia")
+        self.__tabs.addTab(QWidget(), "Mapa")
 
-        self.__layout.addWidget(self.__tabs)
-
-    def __create_temp_tab(self, text):
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-        layout.addWidget(QLabel(text))
-        return widget
+        self.__main_layout.addWidget(self.__tabs)
