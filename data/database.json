@@ -1,0 +1,27 @@
+{
+    "clients": [
+        {
+            "name": "Marek",
+            "surname": "Marucha",
+            "pesel": "1024819303",
+            "country": "Azerbejd\u017can",
+            "id": null
+        },
+        {
+            "name": "Test",
+            "surname": "Marka",
+            "pesel": "123413",
+            "country": "LOL",
+            "id": null
+        },
+        {
+            "name": "Test",
+            "surname": "123",
+            "pesel": "213",
+            "country": "123",
+            "id": null
+        }
+    ],
+    "vehicles": [],
+    "rentals": []
+}

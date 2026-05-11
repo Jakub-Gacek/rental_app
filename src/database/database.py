@@ -1,15 +1,18 @@
-class Database:
-    def __init__(self):
-        self.__data_cache = []
+from abc import ABC, abstractmethod
 
+class Database(ABC):
+    @abstractmethod
     def load_all(self):
         pass
 
-    def save_one(self, obj):
+    @abstractmethod
+    def save_one(self, clients, vehicles, rentals):
         pass
 
+    @abstractmethod
     def update_one(self, obj_id, new_data):
         pass
 
+    @abstractmethod
     def delete_one(self, obj_id):
         pass

@@ -1,11 +1,13 @@
 from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTabWidget
 
 from src.gui.tabs.clients_tab import ClientsTab
+from src.database.json_db import JSONDatabase
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.db = JSONDatabase("data/database.json")
         self.init_view()
 
     def init_view(self):
@@ -19,7 +21,7 @@ class MainWindow(QMainWindow):
 
         self.__tabs = QTabWidget()
 
-        self.__tabs.addTab(ClientsTab(), "Klienci")
+        self.__tabs.addTab(ClientsTab(self.db), "Klienci")
         self.__tabs.addTab(QWidget(), "Pojazdy")
         self.__tabs.addTab(QWidget(), "Wypożyczenia")
         self.__tabs.addTab(QWidget(), "Mapa")
