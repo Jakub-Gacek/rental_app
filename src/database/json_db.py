@@ -2,6 +2,7 @@ import json
 import os
 from src.database.database import Database
 from src.models.client import Client
+from src.models.vehicle import Vehicle  # Musisz zaimportować model Vehicle
 
 
 class JSONDatabase(Database):
@@ -25,12 +26,15 @@ class JSONDatabase(Database):
         clients = [Client(c.get("name"), c.get("surname"), c.get("pesel"), c.get("country"), c.get("id"))
                    for c in self.__data_cache.get("clients", [])]
 
-        return clients, [], []
+        vehicles = [Vehicle(v.get("brand"), v.get("model"), v.get("year"), v.get("vin"), v.get("id"))
+                    for v in self.__data_cache.get("vehicles", [])]
+
+        return clients, vehicles, []
 
     def save_one(self, clients, vehicles, rentals):
         self.__data_cache = {
             "clients": [c.to_json() for c in clients],
-            "vehicles": [],
+            "vehicles": [v.to_json() for v in vehicles],
             "rentals": []
         }
         with open(self.__file_path, 'w', encoding='utf-8') as f:
@@ -41,8 +45,32 @@ class JSONDatabase(Database):
         clients.append(client)
         self.save_one(clients, v, r)
 
-    def update_one(self, obj_id, new_data):
-        pass
+    def add_vehicle(self, vehicle):
+        clients, vehicles, rentals = self.load_all()
+        vehicles.append(vehicle)
+        self.save_one(clients, vehicles, rentals)
+
+    def update_one(self, obj_id, updated_obj):
+        clients, vehicles, rentals = self.load_all()
+
+        # Szukamy w klientach
+        for i, c in enumerate(clients):
+            if c.get_id() == obj_id:
+                clients[i] = updated_obj
+                self.save_one(clients, vehicles, rentals)
+                return
+
+        # Szukamy w pojazdach
+        for i, v in enumerate(vehicles):
+            if v.get_id() == obj_id:
+                vehicles[i] = updated_obj
+                self.save_one(clients, vehicles, rentals)
+                return
 
     def delete_one(self, obj_id):
-        pass
+        clients, vehicles, rentals = self.load_all()
+
+        clients = [c for c in clients if c.get_id() != obj_id]
+        vehicles = [v for v in vehicles if v.get_id() != obj_id]
+
+        self.save_one(clients, vehicles, rentals)

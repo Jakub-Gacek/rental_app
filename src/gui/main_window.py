@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QTabWidget
 
 from src.gui.tabs.clients_tab import ClientsTab
 from src.database.json_db import JSONDatabase
+from src.gui.tabs.fleet_tab import FleetTab
 
 
 class MainWindow(QMainWindow):
@@ -22,7 +23,7 @@ class MainWindow(QMainWindow):
         self.__tabs = QTabWidget()
 
         self.__tabs.addTab(ClientsTab(self.db), "Klienci")
-        self.__tabs.addTab(QWidget(), "Pojazdy")
+        self.__tabs.addTab(FleetTab(self.db), "Pojazdy")
         self.__tabs.addTab(QWidget(), "Wypożyczenia")
         self.__tabs.addTab(QWidget(), "Mapa")
 

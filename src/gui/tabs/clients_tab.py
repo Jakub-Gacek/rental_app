@@ -4,12 +4,13 @@ from PyQt6.QtWidgets import (QWidget, QGridLayout, QTableWidget, QPushButton, QV
 from src.database.json_db import JSONDatabase
 from src.models.client import Client
 
+
 class ClientsTab(QWidget):
     def __init__(self, db_manager: JSONDatabase):
         super().__init__()
         self.__db = db_manager
         self.init_view()
-        self.odswiez_tabele()
+        self.refresh_tab()
 
     def init_view(self):
         # Układ Siatki
@@ -34,26 +35,30 @@ class ClientsTab(QWidget):
         self.__form_layout.addWidget(self.__input_surname)
         self.__form_layout.addWidget(self.__input_pesel)
         self.__form_layout.addWidget(self.__input_country)
+
+        self.__label_id = QLabel("Unique ID: ---")
+        self.__label_id.setStyleSheet("color: gray; font-size: 11px; margin-top: 10px;")
+        self.__label_id.setVisible(False)
+        self.__form_layout.addWidget(self.__label_id)
+
         self.__form_layout.addStretch()  # Spycha pola do góry kafla
 
         # Przyciski
         self.__action_container = QWidget()
         self.__action_layout = QVBoxLayout(self.__action_container)
         self.__btn_save = QPushButton("Zapisz do bazy")
-        self.__btn_save.clicked.connect(self.dodaj_klienta_do_bazy)
-        self.__btn_clear = QPushButton("Wyczyść pola")
+        self.__btn_save.clicked.connect(self.add_client_to_db)
         self.__action_layout.addWidget(self.__btn_save)
-        self.__action_layout.addWidget(self.__btn_clear)
 
         # Tabela
         self.__table = QTableWidget()
         self.__table.setColumnCount(3)
         self.__table.setHorizontalHeaderLabels(["Imię", "Nazwisko", "PESEL"])
         self.__table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-
+        # Blokada Tabeli
         self.__table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.__table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
-        self.__table.itemClicked.connect(self.dodaj_klienta_do_bazy)
+        self.__table.itemClicked.connect(self.load_data_to_form)
 
         # 2. Rozmieszczamy kafle w siatce
         self.__grid_layout.addWidget(self.__form_container, 0, 0)
@@ -64,7 +69,7 @@ class ClientsTab(QWidget):
         self.__grid_layout.setColumnStretch(0, 1)
         self.__grid_layout.setColumnStretch(1, 2)
 
-    def dodaj_klienta_do_bazy(self):
+    def add_client_to_db(self):
         imie = self.__input_name.text()
         nazwisko = self.__input_surname.text()
         pesel = self.__input_pesel.text()
@@ -75,14 +80,31 @@ class ClientsTab(QWidget):
 
             self.__db.add_client(nowy_klient)
 
-            self.odswiez_tabele()
+            self.refresh_tab()
 
             self.__input_name.clear()
             self.__input_surname.clear()
             self.__input_pesel.clear()
             self.__input_country.clear()
 
-    def odswiez_tabele(self):
+    def edit_client_db(self):
+        name = self.__input_name.text()
+        surname = self.__input_surname.text()
+        pesel = self.__input_pesel.text()
+        country = self.__input_country.text()
+
+        full_id_text = self.__label_id.text()
+        client_id = full_id_text.replace("Unique ID: ", "")
+
+        if name and surname and pesel and client_id:
+            updated_client = Client(name, surname, pesel, country, client_id)
+
+            self.__db.update_one(client_id, updated_client)
+
+            self.refresh_tab()
+            self.reset_to_add_mode()
+
+    def refresh_tab(self):
         self.__table.setRowCount(0)
         clients, _, _ = self.__db.load_all()
 
@@ -93,17 +115,41 @@ class ClientsTab(QWidget):
             self.__table.setItem(row, 1, QTableWidgetItem(client.get_surname()))
             self.__table.setItem(row, 2, QTableWidgetItem(client.get_pesel()))
 
-    def zaladuj_dane_do_formularza(self):
-        current_row = self.__table.currentRow()
-        if current_row < 0:
-            return
+    def load_data_to_form(self, item):
 
-        self.__input_name.setText(self.__table.item(current_row, 0).text())
-        self.__input_surname.setText(self.__table.item(current_row, 1).text())
-        self.__input_pesel.setText(self.__table.item(current_row, 2).text())
+        row = item.row()
 
-        self.__btn_save.setText("Edytuj dane")
+        clients, _, _ = self.__db.load_all()
 
-        self.__btn_save.clicked.disconnect()
-        self.__btn_save.clicked.connect(self.edytuj_klienta_w_bazie)
+        if row < len(clients):
+            selected_client = clients[row]
 
+            self.__label_id.setText(selected_client.get_id())
+            self.__input_name.setText(selected_client.get_name())
+            self.__input_surname.setText(selected_client.get_surname())
+            self.__input_pesel.setText(selected_client.get_pesel())
+            self.__input_country.setText(selected_client.get_country())
+
+            self.__label_id.setText(f"Unique ID: {selected_client.get_id()}")
+            self.__label_id.setVisible(True)
+            self.__btn_save.setText("Edytuj dane")
+            try:
+                self.__btn_save.clicked.disconnect()
+            except TypeError:
+                pass
+            self.__btn_save.clicked.connect(self.edit_client_db)
+
+    def reset_to_add_mode(self):
+        self.__input_name.clear()
+        self.__input_surname.clear()
+        self.__input_pesel.clear()
+        self.__input_country.clear()
+
+        self.__label_id.setVisible(False)
+        self.__btn_save.setText("Zapisz do bazy")
+
+        try:
+            self.__btn_save.clicked.disconnect()
+        except TypeError:
+            pass
+        self.__btn_save.clicked.connect(self.add_client_to_db)

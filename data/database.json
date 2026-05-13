@@ -1,27 +1,56 @@
 {
     "clients": [
         {
-            "name": "Marek",
-            "surname": "Marucha",
-            "pesel": "1024819303",
-            "country": "Azerbejd\u017can",
-            "id": null
+            "name": "Dzia\u0142a? ",
+            "surname": "Uje",
+            "pesel": "To",
+            "country": "Teraz",
+            "id": "495c89de"
+        },
+        {
+            "name": "Co ma dzia\u0142ac ",
+            "surname": "To dzia\u0142a ",
+            "pesel": "XD",
+            "country": "Teraz",
+            "id": "252417fc"
         },
         {
             "name": "Test",
-            "surname": "Marka",
-            "pesel": "123413",
-            "country": "LOL",
-            "id": null
+            "surname": "LOl",
+            "pesel": "XD",
+            "country": "Teraz",
+            "id": "c8dc3b45"
+        },
+        {
+            "name": "Tes",
+            "surname": "Lol",
+            "pesel": "Tes",
+            "country": "XD",
+            "id": "b3045dfb"
+        },
+        {
+            "name": "XD",
+            "surname": "Uje",
+            "pesel": "To",
+            "country": "Teraz",
+            "id": "d5369dad"
         },
         {
             "name": "Test",
-            "surname": "123",
-            "pesel": "213",
-            "country": "123",
-            "id": null
+            "surname": "Uje",
+            "pesel": "To",
+            "country": "Teraz",
+            "id": "fb96e67a"
         }
     ],
-    "vehicles": [],
+    "vehicles": [
+        {
+            "brand": "Test",
+            "model": "Sdsa",
+            "year": "DSA",
+            "vin": "dSA",
+            "id": "3f89fae4"
+        }
+    ],
     "rentals": []
 }
