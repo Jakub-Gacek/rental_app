@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class Database(ABC):
     @abstractmethod
     def load_all(self):

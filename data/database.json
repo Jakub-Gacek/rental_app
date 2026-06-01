@@ -1,44 +1,160 @@
 {
     "clients": [
         {
-            "name": "Marek",
-            "surname": "Marucha",
-            "pesel": "1024819303",
-            "country": "Azerbejd\u017can",
-            "id": "338f7513"
+            "name": "Krzysztof",
+            "surname": "Piotrowski",
+            "pesel": "91010437564",
+            "country": "Polska",
+            "id": "c4f86029"
         },
         {
-            "name": "Test",
-            "surname": "Marka",
-            "pesel": "123413",
-            "country": "LOL",
-            "id": "0a4711ec"
+            "name": "Krystyna",
+            "surname": "Jankowska",
+            "pesel": "97100600588",
+            "country": "Polska",
+            "id": "766c1ce1"
         },
         {
-            "name": "Test",
-            "surname": "123",
-            "pesel": "213",
-            "country": "123",
-            "id": "46754a1c"
+            "name": "Karolina",
+            "surname": "Wójcik",
+            "pesel": "80072212807",
+            "country": "Niemcy",
+            "id": "a4069382"
         },
         {
-            "name": "Piotr",
-            "surname": "Anikiej",
-            "pesel": "409189523",
-            "country": "Polski",
-            "id": "88412579"
+            "name": "Barbara",
+            "surname": "Nowak",
+            "pesel": "91031389736",
+            "country": "Czechy",
+            "id": "d996a2d7"
+        },
+        {
+            "name": "Jan",
+            "surname": "Piekarski",
+            "pesel": "82081400769",
+            "country": "Słowacja",
+            "id": "5f4bc025"
+        },
+        {
+            "name": "Andrzej",
+            "surname": "Kowalski",
+            "pesel": "75042309812",
+            "country": "Polska",
+            "id": "b12c4567"
+        },
+        {
+            "name": "Tomasz",
+            "surname": "Mazur",
+            "pesel": "88111204356",
+            "country": "Polska",
+            "id": "e98f7654"
+        },
+        {
+            "name": "Anna",
+            "surname": "Wiśniewska",
+            "pesel": "93022807641",
+            "country": "Polska",
+            "id": "a1b2c3d4"
+        },
+        {
+            "name": "Michał",
+            "surname": "Zieliński",
+            "pesel": "85061509234",
+            "country": "Polska",
+            "id": "f5e6d7c8"
         }
     ],
     "vehicles": [
         {
+            "brand": "Toyota",
+            "model": "Corolla",
+            "plate": "WI12345",
+            "status": "Dostępny",
+            "mileage": "15200",
+            "vin": "JTDKB3FU600123456",
+            "id": "v1111111"
+        },
+        {
+            "brand": "Skoda",
+            "model": "Octavia",
+            "plate": "WZ54321",
+            "status": "Dostępny",
+            "mileage": "48900",
+            "vin": "TMBBU7NE000654321",
+            "id": "v2222222"
+        },
+        {
+            "brand": "Kia",
+            "model": "Sportage",
+            "plate": "WB9876A",
+            "status": "Wypożyczony",
+            "mileage": "23100",
+            "vin": "KNAFU814D00987654",
+            "id": "v3333333"
+        },
+        {
+            "brand": "Volkswagen",
+            "model": "Golf",
+            "plate": "WX88221",
+            "status": "Dostępny",
+            "mileage": "61200",
+            "vin": "WVWZZZAUZ00112233",
+            "id": "v4444444"
+        },
+        {
+            "brand": "Audi",
+            "model": "A4",
+            "plate": "WI9911A",
+            "status": "Wypożyczony",
+            "mileage": "11000",
+            "vin": "WAUZZZ8K000445566",
+            "id": "v5555555"
+        },
+        {
             "brand": "BMW",
-            "model": "M3",
-            "plate": "BL",
-            "status": "Dost\u0119pny",
-            "mileage": "4505km",
-            "vin": "0128409351",
-            "id": "552d310f"
+            "model": "320i",
+            "plate": "KR77221",
+            "status": "Dostępny",
+            "mileage": "5400",
+            "vin": "WBA3A510X00778899",
+            "id": "v6666666"
+        },
+        {
+            "brand": "Ford",
+            "model": "Focus",
+            "plate": "WRU5RZS",
+            "status": "Dostępny",
+            "mileage": "34758",
+            "vin": "8KV6UNN6PFH800TC3",
+            "id": "dadda13b"
+        },
+        {
+            "brand": "BMW",
+            "model": "X5",
+            "plate": "KRMGR2P",
+            "status": "Dostępny",
+            "mileage": "44431",
+            "vin": "RPYFJ3CKBJ0RK0SWP",
+            "id": "a6589b34"
+        },
+        {
+            "brand": "Hyundai",
+            "model": "Ioniq 5",
+            "plate": "WI001EV",
+            "status": "Dostępny",
+            "mileage": "12400",
+            "vin": "KMHC851LD00112233",
+            "id": "v9999999"
         }
     ],
-    "rentals": []
+    "rentals": [
+        {
+            "id": "e9eccca3",
+            "client_id": "766c1ce1",
+            "vehicle_id": "v3333333",
+            "location_area": "Amsterdam",
+            "end_date": "2026-06-01",
+            "range_area": "32"
+        }
+    ]
 }
