@@ -1,8 +1,11 @@
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (QWidget, QGridLayout, QTableWidget, QPushButton, QVBoxLayout, QLabel, QLineEdit,
                              QHeaderView, QTableWidgetItem, QMessageBox)
 
 from src.database.json_db import JSONDatabase
 from src.models.vehicle import Vehicle
+from src.models.vehicle_status import VehicleStatus
 
 
 class FleetTab(QWidget):
@@ -54,11 +57,17 @@ class FleetTab(QWidget):
         self.__btn_save = QPushButton("Zapisz do bazy")
         self.__btn_delete = QPushButton("Skasuj Pojazd")
 
+        self.__btn_service_toggle = QPushButton("Zarządzaj Serwisem")
+        self.__btn_service_toggle.setStyleSheet("background-color: #2b6cb0; color: white; font-weight: bold;")
+        self.__btn_service_toggle.clicked.connect(self.toggle_service)
+        self.__btn_service_toggle.setVisible(False)
+
         self.__btn_save.clicked.connect(self.add_vehicle_to_db)
         self.__btn_delete.clicked.connect(self.delete_vehicle_in_db)
 
         self.__action_layout.addWidget(self.__btn_save)
         self.__action_layout.addWidget(self.__btn_delete)
+        self.__action_layout.addWidget(self.__btn_service_toggle)
 
         self.__search_input = QLineEdit()
         self.__search_input.setPlaceholderText("Szukaj pojazdu (Marka, Model lub Tablice)...")
@@ -92,7 +101,6 @@ class FleetTab(QWidget):
         vin = self.__input_vin.text()
         mileage = self.__input_mileage.text()
 
-        # Podstawowa obsluga bledow
         if not (brand and model and plate and vin and mileage):
             self.show_warning("Błąd formularza", "Wszystkie pola muszą być uzupełnione!")
             return
@@ -105,7 +113,7 @@ class FleetTab(QWidget):
             self.show_warning("Błędny przebieg", "Przebieg pojazdu musi być liczba odatnią!")
             return
 
-        new_vehicle = Vehicle(brand, model, plate, mileage, vin, None, "Dostępny")
+        new_vehicle = Vehicle(brand, model, plate, mileage, vin, None, VehicleStatus.AVAILABLE)
         clients, vehicles, rentals = self.__db.load_all()
         vehicles.append(new_vehicle)
         self.__db.save_one(clients, vehicles, rentals)
@@ -152,8 +160,36 @@ class FleetTab(QWidget):
                 )
                 return
 
-        updated_vehicle = Vehicle(brand, model, plate, mileage, vin, vehicle_id, status)
+        updated_vehicle = Vehicle(brand, model, plate, mileage, vin, vehicle_id, VehicleStatus(status))
         self.__db.update_one(vehicle_id, updated_vehicle)
+        self.refresh_tab()
+        self.reset_to_add_mode()
+
+    def toggle_service(self):
+        selected_row = self.__table.currentRow()
+        if selected_row < 0: return
+
+        clients, vehicles, rentals = self.__db.load_all()
+        vehicle = vehicles[selected_row]
+
+        if vehicle.get_status() == VehicleStatus.UNAVAILABLE.value:
+            self.show_warning(
+                "Pojazd wypożyczony",
+                "Nie można zmienić statusu pojazdu, który jest obecnie wypożyczony!"
+            )
+            return
+
+        if vehicle.get_status() == VehicleStatus.SERVICE.value:
+            new_status = VehicleStatus.AVAILABLE
+        else:
+            new_status = VehicleStatus.SERVICE
+
+        updated_vehicle = Vehicle(
+            vehicle.get_brand(), vehicle.get_model(), vehicle.get_plate(),
+            vehicle.get_mileage(), vehicle.get_vin(), vehicle.get_id(), new_status
+        )
+
+        self.__db.update_one(vehicle.get_id(), updated_vehicle)
         self.refresh_tab()
         self.reset_to_add_mode()
 
@@ -165,9 +201,20 @@ class FleetTab(QWidget):
         for vehicle in vehicles:
             row = self.__table.rowCount()
             self.__table.insertRow(row)
-            self.__table.setItem(row, 0, QTableWidgetItem(vehicle.get_brand()))
-            self.__table.setItem(row, 1, QTableWidgetItem(vehicle.get_model()))
-            self.__table.setItem(row, 2, QTableWidgetItem(vehicle.get_plate()))
+
+            item_brand = QTableWidgetItem(vehicle.get_brand())
+            item_model = QTableWidgetItem(vehicle.get_model())
+            item_plate = QTableWidgetItem(vehicle.get_plate())
+
+            if vehicle.get_status() == VehicleStatus.SERVICE.value:
+                blue_color = QColor("#bbdefb")
+                item_brand.setBackground(blue_color)
+                item_model.setBackground(blue_color)
+                item_plate.setBackground(blue_color)
+
+            self.__table.setItem(row, 0, item_brand)
+            self.__table.setItem(row, 1, item_model)
+            self.__table.setItem(row, 2, item_plate)
 
     def load_data_to_form(self, item):
         if item is None: return
@@ -187,6 +234,14 @@ class FleetTab(QWidget):
             self.__label_status.setText(f"Status: {selected.get_status()}")
             self.__label_status.setVisible(True)
 
+            self.__btn_service_toggle.setVisible(True)
+            if selected.get_status() == VehicleStatus.SERVICE.value:
+                self.__btn_service_toggle.setText("Przywróć z Serwisu")
+                self.__btn_service_toggle.setStyleSheet("background-color: #38a169; color: white; font-weight: bold;")
+            else:
+                self.__btn_service_toggle.setText("Oddaj do Serwisu")
+                self.__btn_service_toggle.setStyleSheet("background-color: #d69e2e; color: white; font-weight: bold;")
+
             self.__btn_save.setText("Edytuj dane")
             try:
                 self.__btn_save.clicked.disconnect()
@@ -202,6 +257,9 @@ class FleetTab(QWidget):
         self.__input_mileage.clear()
         self.__label_id.setVisible(False)
         self.__label_status.setVisible(False)
+
+        self.__btn_service_toggle.setVisible(False)
+
         self.__btn_save.setText("Zapisz do bazy")
         try:
             self.__btn_save.clicked.disconnect()
@@ -215,8 +273,11 @@ class FleetTab(QWidget):
             item_brand = self.__table.item(row, 0).text().lower()
             item_model = self.__table.item(row, 1).text().lower()
             item_plate = self.__table.item(row, 2).text().lower()
-            self.__table.setRowHidden(row,
-                                      search_text not in item_brand and search_text not in item_model and search_text not in item_plate)
+
+            if search_text in item_brand or search_text in item_model or search_text in item_plate:
+                self.__table.setRowHidden(row, False)
+            else:
+                self.__table.setRowHidden(row, True)
 
     def show_warning(self, title, message):
         msg = QMessageBox(self)

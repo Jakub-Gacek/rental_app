@@ -4,6 +4,7 @@ from src.database.database import Database
 from src.models.client import Client
 from src.models.vehicle import Vehicle
 from src.models.rental import Rental
+from src.models.vehicle_status import VehicleStatus
 
 
 class JSONDatabase(Database):
@@ -20,20 +21,15 @@ class JSONDatabase(Database):
             self._data_cache = None
 
             os.makedirs(os.path.dirname(self.__file_path), exist_ok=True)
-
             self.load_all()
-
             self._initialized = True
 
     def load_all(self):
-        if not os.path.exists(self.__file_path):
+        try:
+            with open(self.__file_path, 'r', encoding='utf-8') as f:
+                self.__data_cache = json.load(f)
+        except (json.JSONDecodeError, FileNotFoundError):
             self.__data_cache = {"clients": [], "vehicles": [], "rentals": []}
-        else:
-            try:
-                with open(self.__file_path, 'r', encoding='utf-8') as f:
-                    self.__data_cache = json.load(f)
-            except (json.JSONDecodeError, FileNotFoundError):
-                self.__data_cache = {"clients": [], "vehicles": [], "rentals": []}
 
         clients = [Client(
             c.get("name"),
@@ -50,8 +46,8 @@ class JSONDatabase(Database):
             v.get("mileage"),
             v.get("vin"),
             v.get("id"),
-            v.get("status"))
-            for v in self.__data_cache.get("vehicles", [])]
+            VehicleStatus(v.get("status"))
+        )   for v in self.__data_cache.get("vehicles", [])]
 
         rentals = [Rental(
             r.get("client_id"),
@@ -80,43 +76,41 @@ class JSONDatabase(Database):
             if c.get_id() == obj_id:
                 clients[i] = updated_obj
                 self.save_one(clients, vehicles, rentals)
-                return
+                return True
 
         for i, v in enumerate(vehicles):
             if v.get_id() == obj_id:
                 vehicles[i] = updated_obj
                 self.save_one(clients, vehicles, rentals)
-                return
+                return True
 
         for i, r in enumerate(rentals):
             if r.get_id() == obj_id:
                 rentals[i] = updated_obj
                 self.save_one(clients, vehicles, rentals)
-                return
+                return True
+
+        return False
 
     def delete_one(self, obj_id):
-        try:
-            clients, vehicles, rentals = self.load_all()
+        clients, vehicles, rentals = self.load_all()
 
-            for v in vehicles:
-                if v.get_id() == obj_id:
-                    vehicles.remove(v)
-                    self.save_one(clients, vehicles, rentals)
-                    return True
+        for v in vehicles:
+            if v.get_id() == obj_id:
+                vehicles.remove(v)
+                self.save_one(clients, vehicles, rentals)
+                return True
 
-            for c in clients:
-                if c.get_id() == obj_id:
-                    clients.remove(c)
-                    self.save_one(clients, vehicles, rentals)
-                    return True
+        for c in clients:
+            if c.get_id() == obj_id:
+                clients.remove(c)
+                self.save_one(clients, vehicles, rentals)
+                return True
 
-            for r in rentals:
-                if r.get_id() == obj_id:
-                    rentals.remove(r)
-                    self.save_one(clients, vehicles, rentals)
-                    return True
+        for r in rentals:
+            if r.get_id() == obj_id:
+                rentals.remove(r)
+                self.save_one(clients, vehicles, rentals)
+                return True
 
-            return False
-        except Exception as e:
-            print(f"Błąd podczas usuwania: {e}")
-            return False
+        return False

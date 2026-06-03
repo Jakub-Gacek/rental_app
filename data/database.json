@@ -62,13 +62,20 @@
             "pesel": "85061509234",
             "country": "Polska",
             "id": "f5e6d7c8"
+        },
+        {
+            "name": "Jakub",
+            "surname": "Gacki",
+            "pesel": "06301402451",
+            "country": "Polska",
+            "id": "84f5f584"
         }
     ],
     "vehicles": [
         {
             "brand": "Toyota",
             "model": "Corolla",
-            "plate": "WI12345",
+            "plate": "WI12347",
             "status": "Dostępny",
             "mileage": "15200",
             "vin": "JTDKB3FU600123456",
@@ -87,7 +94,7 @@
             "brand": "Kia",
             "model": "Sportage",
             "plate": "WB9876A",
-            "status": "Wypożyczony",
+            "status": "Dostępny",
             "mileage": "23100",
             "vin": "KNAFU814D00987654",
             "id": "v3333333"
@@ -105,7 +112,7 @@
             "brand": "Audi",
             "model": "A4",
             "plate": "WI9911A",
-            "status": "Wypożyczony",
+            "status": "Dostępny",
             "mileage": "11000",
             "vin": "WAUZZZ8K000445566",
             "id": "v5555555"
@@ -145,16 +152,16 @@
             "mileage": "12400",
             "vin": "KMHC851LD00112233",
             "id": "v9999999"
+        },
+        {
+            "brand": "Nissan",
+            "model": "Quashqai",
+            "plate": "BL59757",
+            "status": "Dostępny",
+            "mileage": "181900",
+            "vin": "12345678910121415",
+            "id": "f08db78b"
         }
     ],
-    "rentals": [
-        {
-            "id": "e9eccca3",
-            "client_id": "766c1ce1",
-            "vehicle_id": "v3333333",
-            "location_area": "Amsterdam",
-            "end_date": "2026-06-01",
-            "range_area": "32"
-        }
-    ]
+    "rentals": []
 }

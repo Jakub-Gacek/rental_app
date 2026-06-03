@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import (QWidget, QGridLayout, QTableWidget, QPushButton, QV
 from src.database.json_db import JSONDatabase
 from src.models.rental import Rental
 from src.models.vehicle import Vehicle
+from src.models.vehicle_status import VehicleStatus
 from src.utils.rentals_cords import geo_coords
 
 
@@ -118,7 +119,7 @@ class RentalsTab(QWidget):
             self.__table_clients.setItem(row, 1, QTableWidgetItem(c.get_surname()))
 
         for v in vehicles:
-            if v.get_status().lower() in ["dostępny", "dostepny"]:
+            if v.get_status() == VehicleStatus.AVAILABLE.value:
                 row = self.__table_vehicles.rowCount()
                 self.__table_vehicles.insertRow(row)
                 item_brand = QTableWidgetItem(v.get_brand())
@@ -181,7 +182,7 @@ class RentalsTab(QWidget):
                 if str(v.get_id()) == str(self.__selected_vehicle_id):
                     vehicles[i] = Vehicle(
                         v.get_brand(), v.get_model(), v.get_plate(),
-                        v.get_mileage(), v.get_vin(), v.get_id(), "Wypożyczony"
+                        v.get_mileage(), v.get_vin(), v.get_id(), VehicleStatus.UNAVAILABLE
                     )
                     break
 
@@ -217,14 +218,22 @@ class RentalsTab(QWidget):
         for row in range(self.__table_clients.rowCount()):
             name = self.__table_clients.item(row, 0).text().lower()
             surname = self.__table_clients.item(row, 1).text().lower()
-            self.__table_clients.setRowHidden(row, search_text not in name and search_text not in surname)
+
+            if search_text in name or search_text in surname:
+                self.__table_clients.setRowHidden(row, False)
+            else:
+                self.__table_clients.setRowHidden(row, True)
 
     def filter_vehicles(self):
         search_text = self.__search_vehicle.text().lower()
         for row in range(self.__table_vehicles.rowCount()):
             brand = self.__table_vehicles.item(row, 0).text().lower()
             model = self.__table_vehicles.item(row, 1).text().lower()
-            self.__table_vehicles.setRowHidden(row, search_text not in brand and search_text not in model)
+
+            if search_text in brand or search_text in model:
+                self.__table_vehicles.setRowHidden(row, False)
+            else:
+                self.__table_vehicles.setRowHidden(row, True)
 
     def reset_to_add_mode(self):
         self.__input_location.clear()

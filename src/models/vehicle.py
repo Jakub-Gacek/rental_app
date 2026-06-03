@@ -1,8 +1,10 @@
 import uuid
 
+from src.models.vehicle_status import VehicleStatus
+
 
 class Vehicle:
-    def __init__(self, brand, model, plate, mileage, vin, vehicle_id=None, status="Dostępny"):
+    def __init__(self, brand, model, plate, mileage, vin, vehicle_id=None, status=VehicleStatus.AVAILABLE):
         self.__brand = brand
         self.__model = model
         self.__plate = plate
@@ -21,7 +23,7 @@ class Vehicle:
 
     def get_vin(self): return self.__vin
 
-    def get_status(self): return self.__status
+    def get_status(self): return self.__status.value
 
     def get_mileage(self): return self.__mileage
 
@@ -30,7 +32,7 @@ class Vehicle:
             "brand": self.__brand,
             "model": self.__model,
             "plate": self.__plate,
-            "status": self.__status,
+            "status": self.__status.value,
             "mileage": self.__mileage,
             "vin": self.__vin,
             "id": self.__id
