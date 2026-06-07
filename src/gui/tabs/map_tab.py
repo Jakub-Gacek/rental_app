@@ -17,12 +17,10 @@ class MapTab(QWidget):
         self.init_view()
 
     def init_view(self):
-        # Główny układ - zero zbędnych marginesów, pełna elastyczność
         self.__main_layout = QHBoxLayout(self)
         self.__main_layout.setContentsMargins(0, 0, 0, 0)
         self.__main_layout.setSpacing(10)
 
-        # Lewa strona: Bezpośrednio wrzucamy mapę i przycisk, bez sztucznych kontenerów
         self.__left_layout = QVBoxLayout()
         self.__left_layout.setContentsMargins(10, 10, 0, 10)
 

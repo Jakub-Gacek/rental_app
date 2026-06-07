@@ -66,7 +66,7 @@
         {
             "name": "Jakub",
             "surname": "Gacki",
-            "pesel": "06301402451",
+            "pesel": "05670140455",
             "country": "Polska",
             "id": "84f5f584"
         }
@@ -94,7 +94,7 @@
             "brand": "Kia",
             "model": "Sportage",
             "plate": "WB9876A",
-            "status": "Dostępny",
+            "status": "Wypożyczony",
             "mileage": "23100",
             "vin": "KNAFU814D00987654",
             "id": "v3333333"
@@ -103,7 +103,7 @@
             "brand": "Volkswagen",
             "model": "Golf",
             "plate": "WX88221",
-            "status": "Dostępny",
+            "status": "Wypożyczony",
             "mileage": "61200",
             "vin": "WVWZZZAUZ00112233",
             "id": "v4444444"
@@ -157,11 +157,36 @@
             "brand": "Nissan",
             "model": "Quashqai",
             "plate": "BL59757",
-            "status": "Dostępny",
+            "status": "Wypożyczony",
             "mileage": "181900",
             "vin": "12345678910121415",
             "id": "f08db78b"
         }
     ],
-    "rentals": []
+    "rentals": [
+        {
+            "id": "a11f83fd",
+            "client_id": "84f5f584",
+            "vehicle_id": "f08db78b",
+            "location_area": "Warszawa",
+            "end_date": "2026-06-13",
+            "range_area": "25"
+        },
+        {
+            "id": "5edef6ff",
+            "client_id": "b12c4567",
+            "vehicle_id": "v3333333",
+            "location_area": "Warszawa",
+            "end_date": "2026-06-05",
+            "range_area": "25"
+        },
+        {
+            "id": "c5b2d290",
+            "client_id": "c4f86029",
+            "vehicle_id": "v4444444",
+            "location_area": "Amsterdam",
+            "end_date": "2026-06-14",
+            "range_area": "120"
+        }
+    ]
 }
