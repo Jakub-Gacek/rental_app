@@ -254,7 +254,6 @@ class RentalsTab(QWidget):
         if not file_path: return
 
         try:
-            # Cała brudna logika tworzenia dokumentu została przeniesiona do PDFGenerator
             PDFGenerator.create_rental_report(file_path, rentals, clients, vehicles)
         except Exception as e:
             print(f"Błąd zapisu raportu: {e}")
